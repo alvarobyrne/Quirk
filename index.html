@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html>
+    <head lang="en">
+        <meta charset="UTF-8">
+        <meta name="keywords" content="quantum,circuit,simulator,quirk">
+        <meta name="description" content="Quirk is an open-source drag-and-drop quantum circuit simulator for exploring and understanding small quantum circuits.">
+        <title>Quirk: Quantum Circuit Simulator</title>
+        <link rel="shortcut icon" href="data:image/png;base64,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">
+
+        <!-- Whatever is between these start/end analytic tags is stripped by the 'downloading offline copy' code. -->
+        <!-- Start Analytics -->
+        <!-- End Analytics -->
+    </head>
+    <body style="margin: 0">
+        <!-- Primary content -->
+        <div id="inspectorDiv" style="display: none">
+            <!-- Buttons -->
+            <div style="margin: 5px;">
+                <button id="menu-button" style="min-width: 50px; min-height: 30px;">Menu</button>
+                &nbsp;
+                &nbsp;
+                <button id="export-button" style="min-width: 50px; min-height: 30px;">Export</button>
+                &nbsp;
+                &nbsp;
+                <button id="clear-circuit-button" style="min-width: 50px; min-height: 30px;">Clear Circuit</button>
+                <button id="clear-all-button" style="min-width: 50px; min-height: 30px;">Clear ALL</button>
+                &nbsp;
+                &nbsp;
+                <button id="undo-button" style="min-width: 50px; min-height: 30px;">Undo</button>
+                <button id="redo-button" style="min-width: 50px; min-height: 30px;">Redo</button>
+                &nbsp;
+                &nbsp;
+                <button id="gate-forge-button" style="min-width: 50px; min-height: 30px;">Make Gate</button>
+                &nbsp;
+                &nbsp;
+                &nbsp;
+                &nbsp;
+                <span style="color:#BBB">Version 2.3</span>
+            </div>
+
+            <!-- Circuit drawing area -->
+            <div id="canvasDiv" style="width: 100%; touch-action: manipulation; tab-index: 0; position: relative;">
+                <canvas id="drawCanvas"></canvas>
+            </div>
+
+            <div id="export-div" style="display:none;">
+    <div id="export-overlay" style="position:fixed; left: 0; top: 0; height: 100vh; width: 100vw; background: rgba(0, 0, 0, 0.7);">
+    </div>
+    <div style="position: absolute; top: 20px; left: 50px; padding: 20px; background-color: white; border: 1px solid black;">
+        <strong>Escaped Link</strong> - Link to current circuit, without special characters that confuse forums.
+        <div style="margin: 10px 0 30px 20px;">
+            <button tabindex="100" id="export-link-copy-button">Copy to Clipboard</button>&nbsp;&nbsp;<span id="export-link-copy-result"></span>
+            <div style="overflow:auto; word-wrap:break-word; max-height:60px; max-width:600px; border: 1px solid black; padding: 10px; margin: 2px;"><a tabindex="101" id="export-escaped-anchor"></a></div>
+        </div>
+
+        <strong>Offline Copy</strong> - Html file containing Quirk and the current circuit.
+        <div style="margin: 10px 0 30px 20px;">
+            <button tabindex="102" id="download-offline-copy-button" style="width:600px; height:60px;">Download ...</button>
+        </div>
+
+        <strong>Circuit JSON</strong> - Parsable representation of current circuit.
+        <div style="margin: 10px 0 0 20px;">
+            <button tabindex="103" id="export-json-copy-button">Copy to Clipboard</button>&nbsp;&nbsp;<span id="export-json-copy-result"></span>
+            <br>
+            <pre tabindex="104" id="export-circuit-json-pre" style="overflow:auto; max-width:600px; max-height:60px; border: 1px solid black; padding:5px; margin:2px;"></pre>
+        </div>
+
+        <br>
+        <strong>Simulation Data JSON</strong> - Output amplitudes, detector results, display data, etc.
+        <div style="margin: 10px 0 0 20px;">
+            <button tabindex="105" id="export-amplitudes-button">Generate and Copy to Clipboard</button>&nbsp;<span id="export-amplitudes-result"></span>
+            <input type="checkbox" tabindex="106" id="export-amplitudes-use-amps" style="float: right; margin-right: 10px;">
+            <label style="float: right" for="export-amplitudes-use-amps">Skip output amplitudes</label>
+            <br>
+            <pre tabindex="107" id="export-amplitudes-pre" style="overflow:auto; max-width:600px; max-height:60px; border: 1px solid black; padding:5px; margin:2px;"></pre>
+        </div>
+    </div>
+</div>
+
+
+            <div id="gate-forge-div" style="display:none">
+    <div id="gate-forge-overlay" style="position:fixed; left: 0; top: 0; height: 100vh; width: 100vw; background: rgba(0, 0, 0, 0.7);">
+    </div>
+    <div style="position: absolute; top: 20px; left: 50px; padding: 20px; background-color: white; border: 1px solid black;">
+        <style scoped>
+            th {
+                font-size: 20px;
+            }
+        </style>
+        <table cellspacing="0">
+            <colgroup>
+                <col style="background-color:#EEE;"/>
+                <col/>
+                <col style="background-color:#EEE;"/>
+                <col/>
+                <col style="background-color:#EEE;"/>
+            </colgroup>
+            <tr>
+                <th>From Rotation</th>
+                <th></th>
+                <th>From Matrix</th>
+                <th></th>
+                <th>From Circuit</th>
+            </tr>
+            <tr>
+                <td>
+                    <input tabindex="100" id='gate-forge-rotation-axis' type="text" size="8" placeholder="X+Z"> axis<br/>
+                    <input tabindex="101" id='gate-forge-rotation-angle' type="text" size="8" placeholder="45" style="margin:0.5em 0 0 0;">° angle<br/>
+                    <input tabindex="102" id='gate-forge-rotation-phase' type="text" size="8" placeholder="0" style="margin:0.5em 0 0 0;">° global phase
+                </td>
+                <td></td>
+                <td>
+                    <style scoped>
+                        input[id="gate-forge-matrix-fix"]:not(:checked) + label {
+                            font-weight: bold;
+                            background-color: pink;
+                        }
+                    </style>
+
+                    <textarea tabindex="200" id="gate-forge-matrix" cols="25" rows="5" placeholder="1, i,  i, 1"></textarea><br/>
+
+                    <input tabindex="201" id="gate-forge-matrix-fix" type="checkbox" checked>
+                    <label for="gate-forge-matrix-fix">ensure unitary (by SVD)</label>
+                </td>
+                <td></td>
+                <td>
+                    From part of current circuit:<br/>
+                    <input tabindex="300" id="gate-forge-circuit-cols" type="text" size="4" placeholder="1:∞" style="margin:0.5em 0 0 0;"> column range<br/>
+                    <input tabindex="301" id="gate-forge-circuit-rows" type="text" size="4" placeholder="1:∞" style="margin:0.5em 0 0.5em 0;"> wire range<br/>
+                    Inputs: <span id="gate-forge-circuit-inputs">(none)</span>, Weight: <span id="gate-forge-circuit-weight">0</span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <canvas id="gate-forge-rotation-canvas" style="border:1px black solid;width:195px;height:100px;margin:10px 0 0 0;"></canvas>
+                </td>
+                <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>OR</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                <td>
+                    <canvas id="gate-forge-matrix-canvas" style="border:1px black solid;width:195px;height:100px;margin:10px 0 0 0;"></canvas>
+                </td>
+                <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>OR</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                <td>
+                    <canvas id="gate-forge-circuit-canvas" style="border:1px black solid;width:195px;height:100px;margin:10px 0 0 0;"></canvas>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <br/><input tabindex="110" id='gate-forge-rotation-name' type="text" placeholder="[the matrix]" style="width:7em;">  circuit symbol<br/><br/>
+                </td>
+                <td></td>
+                <td>
+                    <br/><input tabindex="210" id='gate-forge-matrix-name' type="text" placeholder="[the matrix]" style="width:7em;"> circuit symbol<br/><br/>
+                </td>
+                <td></td>
+                <td>
+                    <br/><input tabindex="310" id='gate-forge-circuit-name' type="text" placeholder="[the circuit]" style="width:7em;"> circuit symbol<br/><br/>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <button tabindex="120" id="gate-forge-rotation-button" style="width:100%;height:30px;">Create Rotation Gate</button>
+                </td>
+                <td></td>
+                <td>
+                    <button tabindex="220" id="gate-forge-matrix-button" style="width:100%;height:30px;">Create Matrix Gate</button>
+                </td>
+                <td></td>
+                <td>
+                    <button tabindex="320" id="gate-forge-circuit-button" style="width:100%;height:30px;">Create Circuit Gate</button>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+        </div>
+
+        <div id="menu-div" style="display:block;">
+    <div id="menu-overlay" style="position:fixed; left: 0; top: 0; height: 100vh; width: 100vw; background: rgba(0, 0, 0, 0.8);">
+    </div>
+    <div style="position:absolute; top:20px; left:50px; margin:0;">
+        <div style="display:inline-block; padding:20px; background-color:white; border:1px solid black; text-align:center;">
+            <div style="font-size: 32px;">
+                <img src="data:image/png;base64,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"/>
+                Welcome to Quirk
+            </div>
+
+            A drag-and-drop quantum circuit simulator.
+
+            <div style="margin:20px;">
+                <div id="loading-div" style="color:#D90; font-size:40px; display:block; height:120px; width:410px;">
+                    Loading...
+                </div>
+                <button tabindex="50" id="close-menu-button" style="width:410px; height:120px; font-size:20px; display:none;">Edit Circuit</button>
+            </div>
+
+            <div style="display:inline-block; text-align:center; border:1px solid black; padding:2px;">
+                <a tabindex="51" href="https://github.com/Strilanc/Quirk/wiki/How-to-use-Quirk">
+                    <div style="width:128px;">
+                        <svg version="1.1" viewBox="0 0 20 25" width="48" height="48">
+                          <text x="5" y="9" style="font-size: 8px;">???</text>
+                          <path d="M0 0 h20 v25 h-20 v-25 M3 13 h14 M3 17 h14 M3 21 h14" stroke="black" fill="transparent"></path>
+                        </svg>
+                        <div>How to Use</div>
+                    </div>
+                </a>
+            </div>
+
+            <div style="display:inline-block; text-align:center; border:1px solid black; padding:2px;">
+                <a tabindex="52" href="https://www.youtube.com/watch?v=aloFwlBUwsQ">
+                    <div style="width:128px;">
+                        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAACt0lEQVQoz+3SP09TYRQG8IOL4RsgSNvbv4C4uMAkLgbippEw6CKwqIuGwW/gZEI6kIiDo0MnEk1MmEBLRQFbCnJLa6WlFK6K2kKrBarH55p7TUWa1vgm8pqe5Jc0vbfneZ+8JWYmmUl9+FqBWoFagf+hwP5Jn/TUQw/cgmG4Dz54DH4IQQwSkIaMgf+Q+bu0sStm7PYbWT4je9g4i36meio3a+2eOrgBGeBDKmOcse63Aql29yiwJO79cvjVE+4+YMn0/SyQbHNPA0tm+sfhV9rcdmBJOehNq2sQWFKDFG91eYEl5aXXLS4fsKR8FPM4A8BCtLq3hO2qToCiHqcKLMJOKrW3NnTzZbTFlRO1swKVlt1ODViEr9ks65NPpQor/VeCyx5XQdTuMjSKuBw5YBHMAvoU9/Z4MxzejvdeDOJZUVTGPjlS8UGUYkkBc/JbW7weCGRi53rm8c43kXk6euV0sCgHFTBv46OmcXp8/F3kTNeCyExadDhYlHIFSm/jbTLJqbGx9aWOjoiITFpw2FmUSgXM2/iwscFaIsHRgf7I32ZS2G5nUaopoM+237+61Nm5JCKT5hU7i1LxLxQKaerprrDITAopCotSrsAXVX0f6e4OiswyUdCmsCj7C+wkk9no+QtzeFYUmVOK5qxKDlgEs8CupuWjly7P4LtdUbvLyNGsVdGARSisJArxq9dmZ232gqidFWg0Y7GpwEJYlbywXdVR6UWzbQpYUlP0vNnmA5aUj6aPW73AkvLSsybrALCkBijQZFWAJaWQPlONlgCwZAJkztNGSy+wZHqpdJ4cs4wAS2KEDprJBssgJIEPqU24DnVUbiYamo/AKeiH23AXHsAjmISQIQ4J0CBjyAJX4bPx/idjh27R2DsBD43MUbgDQ3AWjv52YGaWWq1ArUCtQK3Av/UdR/1BF+14cggAAAAASUVORK5CYII=">
+                        <div>Tutorial Video</div>
+                    </div>
+                </a>
+            </div>
+
+            <div style="display:inline-block; text-align:center; border:1px solid black; padding:2px;">
+                <a tabindex="53" href="https://github.com/Strilanc/Quirk">
+                    <div style="width:128px;">
+                        <svg version="1.1" viewBox="0 0 16 16" width="48" height="48">
+                            <path fill-rule="evenodd"
+                                  d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z">
+                            </path>
+                        </svg>
+                        <div>Source Code</div>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div style="display:inline-block; vertical-align:top; line-height:1.8; padding:13px 15px 13px 5px; background-color:#DDD; border:1px solid gray; margin:0 0 0 -5px;">
+            Example Circuits<br>
+            <a id="example-anchor-grover">Grover Search</a><br>
+            <a id="example-anchor-shor">Shor Period Finding</a><br>
+            <a id="example-chsh-test">Bell Inequality Test (CHSH)</a><br>
+            <a id="example-anchor-teleport">Quantum Teleportation</a><br>
+            <a id="example-superdense-coding">Superdense Coding</a><br>
+            <a id="example-anchor-delayed-eraser">Delayed Choice Eraser</a><br>
+            <a id="example-symmetry-break">Symmetry Breaking</a><br>
+            <a id="example-qft">Quantum Fourier Transform</a><br>
+            <a id="example-addition">Reversible Addition</a><br>
+            <a id="example-anchor-distill">Magic State Distillation</a><br>
+        </div>
+    </div>
+</div>
+
+
+        <div id="error-div" style="display:none; font-size:24px; font-family:monospace; color:red;">
+    <div id="error-happened-div">An error happened. :(</div>
+    <div id="error-message-div" style="font-size: 16px;"></div>
+    <div id="error-known-div" style="font-size: 18px;">
+        <br>
+        <a id="error-known-issue-anchor">See more / complain about this issue on github</a>.
+        <br>
+        <br>
+    </div>
+    <div id="error-report-div">
+        <br>
+        Please report it:
+        <ul style="font-size: 18px;">
+            <li>
+                <a id="error-github-anchor">Create an issue on github</a>
+                (requires an account)
+                (repository: <a href="https://github.com/Strilanc/Quirk">Strilanc/Quirk</a>)
+            </li>
+            <li>
+                or <a id="error-mailto-anchor"></a>
+            </li>
+        </ul>
+        <br>
+        <br>
+        Useful details to mention (auto-included if you use the create/email links above):
+        <div style="font-size: 16px;">
+            <br>
+            <div id="error-description-div"></div>
+            <br>
+            PRE-DRAWN
+            <br>
+            <img id="error-image-pre" src="#" style="max-height: 250px; max-width: 600px"/>
+            <br>
+            POST-DRAWN
+            <br>
+            <img id="error-image-post" src="#" style="max-height: 250px; max-width: 600px"/>
+        </div>
+    </div>
+</div>
+
+
+        <!-- Javascript detection -->
+        <div id="noscript-div" class="noscript-warning" style="
+                        animation-duration: 3.0s;
+                   -moz-animation-duration: 3.0s;
+                -webkit-animation-duration: 3.0s;
+                     -o-animation-duration: 3.0s;
+                        animation-name: delay-showing-before-hide-script-can-run-but-then-jump-in;
+                   -moz-animation-name: delay-showing-before-hide-script-can-run-but-then-jump-in;
+                -webkit-animation-name: delay-showing-before-hide-script-can-run-but-then-jump-in;
+                     -o-animation-name: delay-showing-before-hide-script-can-run-but-then-jump-in;
+                      background-color: white;
+                                border: 1px solid red;
+                               padding: 10px;">
+            <style scoped>
+                @keyframes delay-showing-before-hide-script-can-run-but-then-jump-in {
+                    from { opacity: 0; }
+                    95% { opacity: 0; }
+                    to { opacity: 1; }
+                }
+                @-webkit-keyframes delay-showing-before-hide-script-can-run-but-then-jump-in {
+                    from { opacity: 0; }
+                    95% { opacity: 0; }
+                    to { opacity: 1; }
+                }
+                @-moz-keyframes delay-showing-before-hide-script-can-run-but-then-jump-in {
+                    from { opacity: 0; }
+                    95% { opacity: 0; }
+                    to { opacity: 1; }
+                }
+                @-o-keyframes delay-showing-before-hide-script-can-run-but-then-jump-in {
+                    from { opacity: 0; }
+                    95% { opacity: 0; }
+                    to { opacity: 1; }
+                }
+
+                .noscript-warning {
+                    color: red;
+                    font-size: 24px;
+                    position: absolute;
+                    top: 25%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                }
+            </style>
+            You appear to have JavaScript blocked. And Quirk is made out of JavaScript... :(
+        </div>
+        <script>
+          document.getElementById('noscript-div').style.display = 'none';
+        </script>
+
+        <script>
+          document.getElementById('noscript-div').style.display = 'block';
+          //noinspection InnerHTMLJS
+          document.QUIRK_QUINE_ALL_HTML_ORIGINAL = '<!'+'DOCTYPE html>\n<'+'html>\n    ' +
+                  document.documentElement.innerHTML + '\n<' + '/html>';
+          document.getElementById('noscript-div').style.display = 'none';
+//DEFAULT_CIRCUIT_START
+document.DEFAULT_CIRCUIT = undefined;
+//DEFAULT_CIRCUIT_END
+
+// UN-MINIFIED SOURCE IS AVAILABLE FROM github.com/Strilanc/Quirk
+
+</script>
+<script src="./index.js"></script>
+<script>
+var chokidar = require('chokidar');
+chokidar.watch([
+'./index.html',
+'./index.js',
+'./nw.js',
+],{}).on('change',(a,b)=>{
+    console.log("a : ",a);
+	console.log("b : ",b);
+	location.reload();
+})
+</script>
+<script src="./nw.js"></script>
+    </body>
+</html>
