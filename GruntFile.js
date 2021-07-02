@@ -98,6 +98,17 @@ module.exports = function(grunt) {
                 ],
                 dest: 'out/tmp/concatenated-src.js'
             },
+            'concat-traceur-js': {
+                options: {
+                    separator: ';'
+                },
+                src: [
+                    'out/tmp/traceur/bootstrap_pre_src/**/*.js',
+                    'out/tmp/traceur/src/**/*.js',
+                    'out/tmp/traceur/bootstrap_post_src/**/*.js'
+                ],
+                dest: 'index.js'
+            },
             'concat-traceur-test': {
                 options: {
                     separator: ';'
@@ -120,7 +131,7 @@ module.exports = function(grunt) {
                     'out/tmp/traceur/bootstrap_pre_test/**/*.js',
                     'out/tmp/traceur/src/**/*.js',
                     'out/tmp/traceur/test_perf/**/*.js',
-                    'out/tmp/traceur/bootstrap_post_test/**/*.js'
+                    'out/tmp/traceur/bootstrap_post_test*.js'
                 ],
                 dest: 'out/test_perf.js'
             }
@@ -179,6 +190,21 @@ module.exports = function(grunt) {
         output = output.split("<!-- INCLUDE EXPORT PART -->").join(exportPart);
         grunt.file.write(dst, output);
     });
+    grunt.registerTask('concat-html', function(htmlSrc, dst) {
+        var html = grunt.file.read(htmlSrc);
+        // var js = grunt.file.read(jsSrc);
+        var errPart = grunt.file.read('html/error.partial.html');
+        var forgePart = grunt.file.read('html/forge.partial.html');
+        var exportPart = grunt.file.read('html/export.partial.html');
+        var menuPart = grunt.file.read('html/menu.partial.html');
+        var output = html;
+        output = output.split("<!-- INCLUDE SOURCE PART -->").join('</script>\n<script src="./index.js">');
+        output = output.split("<!-- INCLUDE MENU PART -->").join(menuPart);
+        output = output.split("<!-- INCLUDE ERROR PART -->").join(errPart);
+        output = output.split("<!-- INCLUDE FORGE PART -->").join(forgePart);
+        output = output.split("<!-- INCLUDE EXPORT PART -->").join(exportPart);
+        grunt.file.write(dst, output);
+    });
 
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-contrib-concat');
@@ -187,13 +213,25 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-karma');
     grunt.loadNpmTasks('grunt-traceur');
 
+    grunt.registerTask('build-html', [
+        'concat-html:html/quirk.template.html:./index.html',
+    ]);
     grunt.registerTask('build-src', [
         'clean:clean-tmp',
         'traceur:translate-src',
         'bootstrap-get-packages:src/main.js:out/tmp/traceur/bootstrap_post_src/run_main.js',
         'concat:concat-traceur-src',
-        'uglify:uglify-concatenated-src',
-        'inject-js-into-html:html/quirk.template.html:out/tmp/minified-src.js:out/quirk.html',
+        //'uglify:uglify-concatenated-src',
+        'inject-js-into-html:html/quirk.template.html:out/tmp/concatenated-src.js:out/quirk.html',
+        'clean:clean-tmp'
+    ]);
+    grunt.registerTask('build-js', [
+        'clean:clean-tmp',
+        'traceur:translate-src',
+        'bootstrap-get-packages:src/main.js:out/tmp/traceur/bootstrap_post_src/run_main.js',
+        'concat:concat-traceur-js',
+        //'uglify:uglify-concatenated-src',
+        // 'inject-js-into-html:html/quirk.template.html:out/tmp/concatenated-src.js:out/quirk.html',
         'clean:clean-tmp'
     ]);
     grunt.registerTask('build-debug', [
@@ -208,7 +246,7 @@ module.exports = function(grunt) {
         'clean:clean-tmp',
         'traceur:translate-src',
         'traceur:translate-test',
-        'bootstrap-get-packages:test/**/*.test.js:out/tmp/traceur/bootstrap_post_test/run_tests.js',
+        'bootstrap-get-packages:test/**.test.js:out/tmp/traceur/bootstrap_post_test/run_tests.js',
         'concat:concat-traceur-test',
         'clean:clean-tmp'
     ]);
@@ -216,7 +254,7 @@ module.exports = function(grunt) {
         'clean:clean-tmp',
         'traceur:translate-src',
         'traceur:translate-test-perf',
-        'bootstrap-get-packages:test_perf/**/*.perf.js:out/tmp/traceur/bootstrap_post_test/run_tests.js',
+        'bootstrap-get-packages:test_perf/**.perf.js:out/tmp/traceur/bootstrap_post_test/run_tests.js',
         'concat:concat-traceur-test-perf',
         'clean:clean-tmp'
     ]);

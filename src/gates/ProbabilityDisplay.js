@@ -35,6 +35,8 @@ import {
 } from "../webgl/ShaderCoders.js"
 import {WglTexturePool} from "../webgl/WglTexturePool.js"
 import {WglTextureTrader} from "../webgl/WglTextureTrader.js"
+let _paintMultiProbabilityDisplay_probabilityBars = _paintMultiProbabilityDisplay_probabilityBars1
+let condition =1;
 
 /**
  * Derives conditional computational basis measurement probabilities from the state vector.
@@ -143,17 +145,45 @@ function _paintMultiProbabilityDisplay_grid(args) {
     painter.strokeRect(args.rect, 'lightgray');
 }
 
-function _paintMultiProbabilityDisplay_probabilityBars(args) {
+function _paintMultiProbabilityDisplay_probabilityBars2(args) {
     let {painter, rect: {x, y, w, h}, customStats: probabilities} = args;
     let n = 1 << args.gate.height;
     let d = h / n;
     let e = Math.max(d, 1);
+    painter.ctx.save();
+    painter.ctx.beginPath();
+    painter.ctx.moveTo(x, y);
+    const probabilitiesBuffer = probabilities.rawBuffer()
+    window.oscHack(probabilitiesBuffer);
+    for (let i = 0; i < n; i++) {
+        let p = probabilitiesBuffer[i * 2];
+        let px = x + w * p;
+        let py = y + d * i;
+        painter.ctx.lineTo(px, py);
+        painter.ctx.lineTo(px, py + e);
+    }
+    painter.ctx.lineTo(x, y + h);
+    painter.ctx.lineTo(x, y);
 
+    painter.ctx.strokeStyle = 'gray';
+    painter.ctx.lineWidth = 1;
+    painter.ctx.stroke();
+    painter.ctx.fillStyle = Config.DISPLAY_GATE_FORE_COLOR;
+    painter.ctx.fill();
+    painter.ctx.restore();
+}
+
+function _paintMultiProbabilityDisplay_probabilityBars1(args) {
+    let {painter, rect: {x, y, w, h}, customStats: probabilities} = args;
+    let n = 1 << args.gate.height;
+    let d = h / n;
+    let e = Math.max(d, 1);
     painter.ctx.save();
     painter.ctx.beginPath();
     painter.ctx.moveTo(x, y);
     for (let i = 0; i < n; i++) {
         let p = probabilities.rawBuffer()[i * 2];
+        if(i===0){window.oscHack(p);}
         let px = x + w * p;
         let py = y + d * i;
         painter.ctx.lineTo(px, py);
@@ -247,7 +277,7 @@ function paintMultiProbabilityDisplay(args) {
         if (!textFits) {
             _paintMultiProbabilityDisplay_logarithmHints(args);
         }
-        _paintMultiProbabilityDisplay_probabilityBars(args);
+        if(window.oscHack)_paintMultiProbabilityDisplay_probabilityBars(args);
         if (textFits) {
             _paintMultiProbabilityDisplay_probabilityTexts(args);
         }
@@ -307,7 +337,16 @@ let ProbabilityDisplayFamily = Gate.buildFamily(1, 16, (span, builder) =>
     span === 1 ?
         singleChangeGateMaker(builder) :
         multiChanceGateMaker(span, builder));
+window.probabilityState = function(){
+    if(condition===1){
+        _paintMultiProbabilityDisplay_probabilityBars = _paintMultiProbabilityDisplay_probabilityBars1;
+        condition=2;
+    }else{
+        condition=1;
+        _paintMultiProbabilityDisplay_probabilityBars = _paintMultiProbabilityDisplay_probabilityBars2;
 
+    }
+}
 export {
     ProbabilityDisplayFamily,
     probabilityStatTexture,
