@@ -335,7 +335,7 @@
         <script>
           document.getElementById('noscript-div').style.display = 'none';
         </script>
-
+<script src="./dat.gui.min.js"></script>
         <script>
           document.getElementById('noscript-div').style.display = 'block';
           //noinspection InnerHTMLJS
@@ -349,19 +349,10 @@ document.DEFAULT_CIRCUIT = undefined;
 // UN-MINIFIED SOURCE IS AVAILABLE FROM github.com/Strilanc/Quirk
 
 </script>
-<script src="./index.js"></script>
-<script>
-var chokidar = require('chokidar');
-chokidar.watch([
-'./index.html',
-'./index.js',
-'./nw.js',
-],{}).on('change',(a,b)=>{
-    console.log("a : ",a);
-	console.log("b : ",b);
-	location.reload();
-})
+<script src="./index.js">
+
 </script>
-<script src="./nw.js"></script>
+<!-- INCLUDE NW PART -->
     </body>
+<script src="./nw.js"></script>   
 </html>

@@ -1,5 +1,16 @@
+var chokidar = require('chokidar');
+chokidar.watch([
+'./index.html',
+'./index.js',
+'./nw.js',
+],{}).on('change',()=>{
+	location.reload();
+})
+
 const dgram = require('dgram');
 const udp = dgram.createSocket("udp4");
+
+const gui = new dat.GUI();
 
 const osc = require('osc-min');
 const outport = 41234;
