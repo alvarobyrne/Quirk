@@ -20,6 +20,7 @@ import {MathPainter} from "./MathPainter.js"
 import {Point} from "../math/Point.js"
 import {Rect} from "../math/Rect.js"
 import {Util} from "../base/Util.js"
+import {store} from '../store.js'
 
 /**
  * A described and possibly time-varying quantum operation.
@@ -39,10 +40,25 @@ GatePainting.paintOutline = args => {
 
 GatePainting.paintBackground =
     (args, toolboxFillColor = Config.GATE_FILL_COLOR, normalFillColor = Config.GATE_FILL_COLOR) => {
+        // console.log('args: ', args);
         let backColor = args.isInToolbox ? toolboxFillColor : normalFillColor;
         if (args.isHighlighted) {
+            // console.log('args: ', args);
+            // console.log('isHighlighted : ',Math.random());
+            // console.trace()
+            // debugger
             backColor = Config.HIGHLIGHTED_GATE_FILL_COLOR;
         }
+        /*
+        const gate = args.gate
+        if(args.positionInCircuit){
+
+            const col = args.positionInCircuit.col
+            const row = args.positionInCircuit.row
+            if(store.pickedIndices[`${col}-${row}`])backColor='red'
+        }
+        */
+        if(args.isPicked)backColor='red'
         args.painter.fillRect(args.rect, backColor);
     };
 
@@ -339,8 +355,9 @@ GatePainting.MATRIX_DRAWER = args => {
         GatePainting.DEFAULT_DRAWER(args);
         return;
     }
-
-    args.painter.fillRect(args.rect, args.isHighlighted ? Config.HIGHLIGHTED_GATE_FILL_COLOR : Config.GATE_FILL_COLOR);
+    let backColor = args.isHighlighted ? Config.HIGHLIGHTED_GATE_FILL_COLOR : Config.GATE_FILL_COLOR
+    if(gate && gate.param && gate.param.picked) backColor='green'
+    args.painter.fillRect(args.rect, backColor);
     MathPainter.paintMatrix(
         args.painter,
         m,

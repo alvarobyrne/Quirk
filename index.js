@@ -12968,7 +12968,7 @@ $traceurRuntime.getModule("traceur-runtime@0.0.111/src/runtime/polyfills/polyfil
   "use strict";
   var __moduleName = "src/draw/GateDrawParams.js";
   var GateDrawParams = function() {
-    function GateDrawParams(painter, hand, isInToolbox, isHighlighted, isResizeShowing, isResizeHighlighted, rect, gate, stats, positionInCircuit, focusPoints, customStatsForCircuitPos) {
+    function GateDrawParams(painter, hand, isInToolbox, isHighlighted, isResizeShowing, isResizeHighlighted, rect, gate, stats, positionInCircuit, focusPoints, customStatsForCircuitPos, isPicked) {
       this.painter = painter;
       this.hand = hand;
       this.isInToolbox = isInToolbox;
@@ -12981,6 +12981,7 @@ $traceurRuntime.getModule("traceur-runtime@0.0.111/src/runtime/polyfills/polyfil
       this.positionInCircuit = positionInCircuit;
       this.focusPoints = focusPoints;
       this.customStats = customStatsForCircuitPos;
+      this.isPicked = isPicked;
     }
     return ($traceurRuntime.createClass)(GateDrawParams, {getGateContext: function(key) {
         if (this.positionInCircuit === undefined) {
@@ -13003,6 +13004,7 @@ $traceurRuntime.getModule("traceur-runtime@0.0.111/src/runtime/polyfills/polyfil
   var Point = $traceurRuntime.getModule($traceurRuntime.normalizeModuleName("../math/Point.js", "src/draw/GatePainting.js")).Point;
   var Rect = $traceurRuntime.getModule($traceurRuntime.normalizeModuleName("../math/Rect.js", "src/draw/GatePainting.js")).Rect;
   var Util = $traceurRuntime.getModule($traceurRuntime.normalizeModuleName("../base/Util.js", "src/draw/GatePainting.js")).Util;
+  var store = $traceurRuntime.getModule($traceurRuntime.normalizeModuleName("../store.js", "src/draw/GatePainting.js")).store;
   var GatePainting = function() {
     function GatePainting() {}
     return ($traceurRuntime.createClass)(GatePainting, {}, {});
@@ -13023,6 +13025,8 @@ $traceurRuntime.getModule("traceur-runtime@0.0.111/src/runtime/polyfills/polyfil
     if (args.isHighlighted) {
       backColor = Config.HIGHLIGHTED_GATE_FILL_COLOR;
     }
+    if (args.isPicked)
+      backColor = 'red';
     args.painter.fillRect(args.rect, backColor);
   };
   GatePainting.LABEL_DRAWER = function(args) {
@@ -13226,7 +13230,10 @@ $traceurRuntime.getModule("traceur-runtime@0.0.111/src/runtime/polyfills/polyfil
       GatePainting.DEFAULT_DRAWER(args);
       return;
     }
-    args.painter.fillRect(args.rect, args.isHighlighted ? Config.HIGHLIGHTED_GATE_FILL_COLOR : Config.GATE_FILL_COLOR);
+    var backColor = args.isHighlighted ? Config.HIGHLIGHTED_GATE_FILL_COLOR : Config.GATE_FILL_COLOR;
+    if (gate && gate.param && gate.param.picked)
+      backColor = 'green';
+    args.painter.fillRect(args.rect, backColor);
     MathPainter.paintMatrix(args.painter, m, args.rect, Config.OPERATION_FORE_COLOR, 'black', undefined, Config.OPERATION_BACK_COLOR, undefined, 'transparent');
     if (args.isHighlighted) {
       args.painter.ctx.save();
@@ -18191,6 +18198,8 @@ $traceurRuntime.getModule("traceur-runtime@0.0.111/src/runtime/polyfills/polyfil
 ;$traceurRuntime.registerModule("src/main.js", [], function() {
   "use strict";
   var __moduleName = "src/main.js";
+  var store = $traceurRuntime.getModule($traceurRuntime.normalizeModuleName("./store.js", "src/main.js")).store;
+  console.log('store: ', store);
   $traceurRuntime.getModule($traceurRuntime.normalizeModuleName("./browser/Polyfills.js", "src/main.js"));
   var hookErrorHandler = $traceurRuntime.getModule($traceurRuntime.normalizeModuleName("./fallback.js", "src/main.js")).hookErrorHandler;
   hookErrorHandler();
@@ -18204,29 +18213,29 @@ $traceurRuntime.getModule("traceur-runtime@0.0.111/src/runtime/polyfills/polyfil
   var Rect = $traceurRuntime.getModule($traceurRuntime.normalizeModuleName("./math/Rect.js", "src/main.js")).Rect;
   var RestartableRng = $traceurRuntime.getModule($traceurRuntime.normalizeModuleName("./base/RestartableRng.js", "src/main.js")).RestartableRng;
   var Revision = $traceurRuntime.getModule($traceurRuntime.normalizeModuleName("./base/Revision.js", "src/main.js")).Revision;
-  var $__11 = $traceurRuntime.getModule($traceurRuntime.normalizeModuleName("./circuit/Serializer.js", "src/main.js")),
-      initSerializer = $__11.initSerializer,
-      fromJsonText_CircuitDefinition = $__11.fromJsonText_CircuitDefinition;
+  var $__12 = $traceurRuntime.getModule($traceurRuntime.normalizeModuleName("./circuit/Serializer.js", "src/main.js")),
+      initSerializer = $__12.initSerializer,
+      fromJsonText_CircuitDefinition = $__12.fromJsonText_CircuitDefinition;
   var TouchScrollBlocker = $traceurRuntime.getModule($traceurRuntime.normalizeModuleName("./browser/TouchScrollBlocker.js", "src/main.js")).TouchScrollBlocker;
   var Util = $traceurRuntime.getModule($traceurRuntime.normalizeModuleName("./base/Util.js", "src/main.js")).Util;
   var initializedWglContext = $traceurRuntime.getModule($traceurRuntime.normalizeModuleName("./webgl/WglContext.js", "src/main.js")).initializedWglContext;
-  var $__15 = $traceurRuntime.getModule($traceurRuntime.normalizeModuleName("./browser/MouseWatcher.js", "src/main.js")),
-      watchDrags = $__15.watchDrags,
-      isMiddleClicking = $__15.isMiddleClicking,
-      eventPosRelativeTo = $__15.eventPosRelativeTo;
-  var $__16 = $traceurRuntime.getModule($traceurRuntime.normalizeModuleName("./base/Obs.js", "src/main.js")),
-      ObservableValue = $__16.ObservableValue,
-      ObservableSource = $__16.ObservableSource;
-  var $__17 = $traceurRuntime.getModule($traceurRuntime.normalizeModuleName("./ui/exports.js", "src/main.js")),
-      initExports = $__17.initExports,
-      obsExportsIsShowing = $__17.obsExportsIsShowing;
-  var $__18 = $traceurRuntime.getModule($traceurRuntime.normalizeModuleName("./ui/forge.js", "src/main.js")),
-      initForge = $__18.initForge,
-      obsForgeIsShowing = $__18.obsForgeIsShowing;
-  var $__19 = $traceurRuntime.getModule($traceurRuntime.normalizeModuleName("./ui/menu.js", "src/main.js")),
-      initMenu = $__19.initMenu,
-      obsMenuIsShowing = $__19.obsMenuIsShowing,
-      closeMenu = $__19.closeMenu;
+  var $__16 = $traceurRuntime.getModule($traceurRuntime.normalizeModuleName("./browser/MouseWatcher.js", "src/main.js")),
+      watchDrags = $__16.watchDrags,
+      isMiddleClicking = $__16.isMiddleClicking,
+      eventPosRelativeTo = $__16.eventPosRelativeTo;
+  var $__17 = $traceurRuntime.getModule($traceurRuntime.normalizeModuleName("./base/Obs.js", "src/main.js")),
+      ObservableValue = $__17.ObservableValue,
+      ObservableSource = $__17.ObservableSource;
+  var $__18 = $traceurRuntime.getModule($traceurRuntime.normalizeModuleName("./ui/exports.js", "src/main.js")),
+      initExports = $__18.initExports,
+      obsExportsIsShowing = $__18.obsExportsIsShowing;
+  var $__19 = $traceurRuntime.getModule($traceurRuntime.normalizeModuleName("./ui/forge.js", "src/main.js")),
+      initForge = $__19.initForge,
+      obsForgeIsShowing = $__19.obsForgeIsShowing;
+  var $__20 = $traceurRuntime.getModule($traceurRuntime.normalizeModuleName("./ui/menu.js", "src/main.js")),
+      initMenu = $__20.initMenu,
+      obsMenuIsShowing = $__20.obsMenuIsShowing,
+      closeMenu = $__20.closeMenu;
   var initUndoRedo = $traceurRuntime.getModule($traceurRuntime.normalizeModuleName("./ui/undo.js", "src/main.js")).initUndoRedo;
   var initClear = $traceurRuntime.getModule($traceurRuntime.normalizeModuleName("./ui/clear.js", "src/main.js")).initClear;
   var initUrlCircuitSync = $traceurRuntime.getModule($traceurRuntime.normalizeModuleName("./ui/url.js", "src/main.js")).initUrlCircuitSync;
@@ -18331,6 +18340,18 @@ $traceurRuntime.getModule("traceur-runtime@0.0.111/src/runtime/polyfills/polyfil
     if (clicked !== undefined) {
       revision.commit(clicked.afterTidyingUp().snapshot());
     }
+  });
+  canvasDiv.addEventListener('mousedown', function() {
+    store.isClicking = true;
+  });
+  canvasDiv.addEventListener('mouseup', function() {
+    store.isClicking = false;
+    store.isDragging = false;
+    store.isDropping = false;
+    store.currentPickedIndices = '';
+    var picked = store.pickedIndices;
+    var pickedGates = store.pickedIndices;
+    console.log('pickedGates: ', pickedGates);
   });
   watchDrags(canvasDiv, function(pt, ev) {
     var oldInspector = displayed.get();
@@ -20634,6 +20655,20 @@ $traceurRuntime.getModule("traceur-runtime@0.0.111/src/runtime/polyfills/polyfil
     }};
 });
 //# sourceURL=src/math/Rect.js
+;$traceurRuntime.registerModule("src/store.js", [], function() {
+  "use strict";
+  var __moduleName = "src/store.js";
+  var store = {
+    isClicking: null,
+    pickedIndices: {},
+    currentPickedIndices: '',
+    isDragging: null
+  };
+  return {get store() {
+      return store;
+    }};
+});
+//# sourceURL=src/store.js
 ;$traceurRuntime.registerModule("src/ui/clear.js", [], function() {
   "use strict";
   var __moduleName = "src/ui/clear.js";
@@ -20703,6 +20738,7 @@ $traceurRuntime.getModule("traceur-runtime@0.0.111/src/runtime/polyfills/polyfil
       seq = $__36.seq,
       Seq = $__36.Seq;
   var paintBlochSphereDisplay = $traceurRuntime.getModule($traceurRuntime.normalizeModuleName("../gates/BlochSphereDisplay.js", "src/ui/DisplayedCircuit.js")).paintBlochSphereDisplay;
+  var store = $traceurRuntime.getModule($traceurRuntime.normalizeModuleName("../store.js", "src/ui/DisplayedCircuit.js")).store;
   var CIRCUIT_OP_HORIZONTAL_SPACING = 10;
   var CIRCUIT_OP_LEFT_SPACING = 35;
   var SUPERPOSITION_GRID_LABEL_SPAN = 50;
@@ -21013,6 +21049,25 @@ $traceurRuntime.getModule("traceur-runtime@0.0.111/src/runtime/polyfills/polyfil
               isHighlighted = $__10.isHighlighted,
               isResizeShowing = $__10.isResizeShowing,
               isResizeHighlighted = $__10.isResizeHighlighted;
+          var isPicked = void 0;
+          var id = (col + "-" + row);
+          var rowCol = store.pickedIndices[id];
+          if (isHighlighted) {
+            var condition = store.isClicking && !store.currentPickedIndices && !store.isDragging;
+            if (condition) {
+              store.currentPickedIndices = id;
+              console.log('id: ', id);
+              if (rowCol === undefined) {
+                store.pickedIndices[id] = gate;
+                gate.isPicked = true;
+                rowCol = store.pickedIndices[id];
+              } else {
+                delete store.pickedIndices[id];
+              }
+              console.log('store: ', store);
+            }
+          }
+          isPicked = rowCol !== undefined;
           var drawer = gate.customDrawer || GatePainting.DEFAULT_DRAWER;
           painter.noteTouchBlocker({
             rect: gateRect,
@@ -21027,7 +21082,7 @@ $traceurRuntime.getModule("traceur-runtime@0.0.111/src/runtime/polyfills/polyfil
           drawer(new GateDrawParams(painter, hand, false, isHighlighted && !isResizeHighlighted, isResizeShowing, isResizeHighlighted, gateRect, gate, stats, {
             row: row,
             col: col
-          }, this._highlightedSlot === undefined ? hand.hoverPoints() : [], stats.customStatsForSlot(col, row)));
+          }, this._highlightedSlot === undefined ? hand.hoverPoints() : [], stats.customStatsForSlot(col, row), isPicked));
           this._drawGate_disabledReason(painter, col, row, gateRect, isHighlighted);
         }
         this._drawColumnSurvivalRate(painter, gateColumn, col, stats);

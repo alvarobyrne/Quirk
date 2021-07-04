@@ -13,7 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+import {store} from './store.js'
+console.log('store: ', store);
 // It's important that the polyfills and error fallback get loaded first!
 import {} from "./browser/Polyfills.js"
 import {hookErrorHandler} from "./fallback.js"
@@ -178,7 +179,22 @@ canvasDiv.addEventListener('click', ev => {
         revision.commit(clicked.afterTidyingUp().snapshot());
     }
 });
+canvasDiv.addEventListener('mousedown',()=>{
+    store.isClicking = true;
+    // console.log('store - down: ', store);
+})
 
+canvasDiv.addEventListener('mouseup',()=>{
+    store.isClicking = false;
+    store.isDragging = false;
+    store.isDropping = false;
+    store.currentPickedIndices = '';
+    const picked = store.pickedIndices;
+    // console.log('store - up: ', store);
+    const pickedGates = store.pickedIndices;
+    console.log('pickedGates: ', pickedGates);
+    // console.log('picked: ', picked);
+})
 watchDrags(canvasDiv,
     /**
      * Grab
