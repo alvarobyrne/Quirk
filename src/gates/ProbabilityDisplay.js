@@ -35,8 +35,7 @@ import {
 } from "../webgl/ShaderCoders.js"
 import {WglTexturePool} from "../webgl/WglTexturePool.js"
 import {WglTextureTrader} from "../webgl/WglTextureTrader.js"
-let _paintMultiProbabilityDisplay_probabilityBars = _paintMultiProbabilityDisplay_probabilityBars1
-let condition =1;
+let _paintMultiProbabilityDisplay_probabilityBars;
 
 /**
  * Derives conditional computational basis measurement probabilities from the state vector.
@@ -154,7 +153,7 @@ function _paintMultiProbabilityDisplay_probabilityBars2(args) {
     painter.ctx.beginPath();
     painter.ctx.moveTo(x, y);
     const probabilitiesBuffer = probabilities.rawBuffer()
-    window.oscHack(probabilitiesBuffer);
+    window.ProbabiltityOsc.grabValueForOSC(probabilitiesBuffer);
     for (let i = 0; i < n; i++) {
         let p = probabilitiesBuffer[i * 2];
         let px = x + w * p;
@@ -183,7 +182,7 @@ function _paintMultiProbabilityDisplay_probabilityBars1(args) {
     painter.ctx.moveTo(x, y);
     for (let i = 0; i < n; i++) {
         let p = probabilities.rawBuffer()[i * 2];
-        if(i===0){window.oscHack(p);}
+        if(i===0){window.ProbabiltityOsc.grabValueForOSC(p);}
         let px = x + w * p;
         let py = y + d * i;
         painter.ctx.lineTo(px, py);
@@ -277,7 +276,7 @@ function paintMultiProbabilityDisplay(args) {
         if (!textFits) {
             _paintMultiProbabilityDisplay_logarithmHints(args);
         }
-        if(window.oscHack)_paintMultiProbabilityDisplay_probabilityBars(args);
+        if(window.ProbabiltityOsc.grabValueForOSC)_paintMultiProbabilityDisplay_probabilityBars(args);
         if (textFits) {
             _paintMultiProbabilityDisplay_probabilityTexts(args);
         }
@@ -337,16 +336,16 @@ let ProbabilityDisplayFamily = Gate.buildFamily(1, 16, (span, builder) =>
     span === 1 ?
         singleChangeGateMaker(builder) :
         multiChanceGateMaker(span, builder));
-window.probabilityState = function(){
-    if(condition===1){
+console.log('defining')
+window.ProbabiltityOsc.grabbingTypeSelector = function(type){
+    if(type === window.ProbabiltityOsc.grabbedTypes.SIGNAL){
         _paintMultiProbabilityDisplay_probabilityBars = _paintMultiProbabilityDisplay_probabilityBars1;
-        condition=2;
-    }else{
-        condition=1;
+    }
+    if(type === window.ProbabiltityOsc.grabbedTypes.ARRAY_SIGNAL){
         _paintMultiProbabilityDisplay_probabilityBars = _paintMultiProbabilityDisplay_probabilityBars2;
-
     }
 }
+window.ProbabiltityOsc.grabbingTypeSelector(window.ProbabiltityOsc.grabbedType);
 export {
     ProbabilityDisplayFamily,
     probabilityStatTexture,

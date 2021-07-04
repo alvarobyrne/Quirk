@@ -17539,8 +17539,7 @@ $traceurRuntime.getModule("traceur-runtime@0.0.111/src/runtime/polyfills/polyfil
       makePseudoShaderWithInputsAndOutputAndCode = $__24.makePseudoShaderWithInputsAndOutputAndCode;
   var WglTexturePool = $traceurRuntime.getModule($traceurRuntime.normalizeModuleName("../webgl/WglTexturePool.js", "src/gates/ProbabilityDisplay.js")).WglTexturePool;
   var WglTextureTrader = $traceurRuntime.getModule($traceurRuntime.normalizeModuleName("../webgl/WglTextureTrader.js", "src/gates/ProbabilityDisplay.js")).WglTextureTrader;
-  var _paintMultiProbabilityDisplay_probabilityBars = _paintMultiProbabilityDisplay_probabilityBars1;
-  var condition = 1;
+  var _paintMultiProbabilityDisplay_probabilityBars;
   function probabilityStatTexture(ketTexture, controlTexture, rangeOffset, rangeLength) {
     var trader = new WglTextureTrader(ketTexture);
     trader.dontDeallocCurrentTexture();
@@ -17626,7 +17625,7 @@ $traceurRuntime.getModule("traceur-runtime@0.0.111/src/runtime/polyfills/polyfil
     painter.ctx.beginPath();
     painter.ctx.moveTo(x, y);
     var probabilitiesBuffer = probabilities.rawBuffer();
-    window.oscHack(probabilitiesBuffer);
+    window.ProbabiltityOsc.grabValueForOSC(probabilitiesBuffer);
     for (var i = 0; i < n; i++) {
       var p = probabilitiesBuffer[i * 2];
       var px = x + w * p;
@@ -17661,7 +17660,7 @@ $traceurRuntime.getModule("traceur-runtime@0.0.111/src/runtime/polyfills/polyfil
     for (var i = 0; i < n; i++) {
       var p = probabilities.rawBuffer()[i * 2];
       if (i === 0) {
-        window.oscHack(p);
+        window.ProbabiltityOsc.grabValueForOSC(p);
       }
       var px = x + w * p;
       var py = y + d * i;
@@ -17774,7 +17773,7 @@ $traceurRuntime.getModule("traceur-runtime@0.0.111/src/runtime/polyfills/polyfil
       if (!textFits) {
         _paintMultiProbabilityDisplay_logarithmHints(args);
       }
-      if (window.oscHack)
+      if (window.ProbabiltityOsc.grabValueForOSC)
         _paintMultiProbabilityDisplay_probabilityBars(args);
       if (textFits) {
         _paintMultiProbabilityDisplay_probabilityTexts(args);
@@ -17805,15 +17804,16 @@ $traceurRuntime.getModule("traceur-runtime@0.0.111/src/runtime/polyfills/polyfil
   var ProbabilityDisplayFamily = Gate.buildFamily(1, 16, function(span, builder) {
     return span === 1 ? singleChangeGateMaker(builder) : multiChanceGateMaker(span, builder);
   });
-  window.probabilityState = function() {
-    if (condition === 1) {
+  console.log('defining');
+  window.ProbabiltityOsc.grabbingTypeSelector = function(type) {
+    if (type === window.ProbabiltityOsc.grabbedTypes.SIGNAL) {
       _paintMultiProbabilityDisplay_probabilityBars = _paintMultiProbabilityDisplay_probabilityBars1;
-      condition = 2;
-    } else {
-      condition = 1;
+    }
+    if (type === window.ProbabiltityOsc.grabbedTypes.ARRAY_SIGNAL) {
       _paintMultiProbabilityDisplay_probabilityBars = _paintMultiProbabilityDisplay_probabilityBars2;
     }
   };
+  window.ProbabiltityOsc.grabbingTypeSelector(window.ProbabiltityOsc.grabbedType);
   return {
     get ProbabilityDisplayFamily() {
       return ProbabilityDisplayFamily;
