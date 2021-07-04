@@ -31,6 +31,7 @@ class GateDrawParams {
      * @param {undefined|!{row: !int, col: !int}} positionInCircuit
      * @param {!Array.<!Point>} focusPoints
      * @param {undefined|*} customStatsForCircuitPos
+     * @param {!boolean} isPicked
      */
     constructor(painter,
                 hand,
@@ -43,7 +44,8 @@ class GateDrawParams {
                 stats,
                 positionInCircuit,
                 focusPoints,
-                customStatsForCircuitPos) {
+                customStatsForCircuitPos,
+                isPicked) {
         /** @type {!Painter} */
         this.painter = painter;
         /** @type {!Hand} */
@@ -68,6 +70,8 @@ class GateDrawParams {
         this.focusPoints = focusPoints;
         /** @type {undefined|*} */
         this.customStats = customStatsForCircuitPos;
+        /** @type {!boolean} */
+        this.isPicked =isPicked;
     }
 
     /**

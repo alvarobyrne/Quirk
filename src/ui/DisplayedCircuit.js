@@ -32,6 +32,7 @@ import {Rect} from "../math/Rect.js"
 import {Util} from "../base/Util.js"
 import {seq, Seq} from "../base/Seq.js"
 import {paintBlochSphereDisplay} from "../gates/BlochSphereDisplay.js"
+import {store} from "../store.js"
 
 /** @type {!number} */
 let CIRCUIT_OP_HORIZONTAL_SPACING = 10;
@@ -455,12 +456,14 @@ class DisplayedCircuit {
                 isHighlighted: false
             };
         }
-
+        
         let gateRect = this.gateRect(row, col, gate.width, gate.height);
         let resizeTabRect = GatePainting.rectForResizeTab(gateRect);
-
+        
         let isOverGate = pos => {
             let overGate = this.findGateOverlappingPos(pos);
+            // console.log('overGate: ', overGate);
+            // console.log('gate: ', gate);
             return overGate !== undefined && overGate.col === col && overGate.row === row;
         };
         let isNotCoveredAt = pos => {
@@ -471,6 +474,23 @@ class DisplayedCircuit {
 
         let isResizeHighlighted = gate.canChangeInSize() && seq(focusPosPts).any(isOverGateResizeTab);
         let isHighlighted = !isResizeHighlighted && seq(focusPosPts).any(isOverGate);
+        /*
+        if(isHighlighted && store.isClicking){
+            if(store.clicked && gate){
+                console.log('gate: ', col,row);
+                if(gate.param){
+                    
+                    if(gate.param.picked !== null && gate.param.picked !== undefined){
+                        gate.param.picked = !gate.param.picked;
+                    }
+                }else{
+                    gate.param = {};
+                    gate.param.picked = true
+                }
+            }
+            // console.log('isHighlighted: ', isHighlighted);
+        }
+        */
         let isResizeShowing = gate.canChangeInSize() && (isResizeHighlighted || isHighlighted);
 
         return {isHighlighted, isResizeShowing, isResizeHighlighted};
@@ -527,7 +547,27 @@ class DisplayedCircuit {
 
             let {isHighlighted, isResizeShowing, isResizeHighlighted} =
                 this._highlightStatusAt(col, row, hand.hoverPoints());
-
+            let isPicked;    
+            const id = `${col}-${row}`;
+            let rowCol = store.pickedIndices[id]
+            if(isHighlighted){
+                const condition = store.isClicking && !store.currentPickedIndices && !store.isDragging;
+                if(condition ){
+                    store.currentPickedIndices = id;
+                    console.log('id: ', id);
+                    if(rowCol===undefined){
+                        
+                        store.pickedIndices[id]=gate
+                        gate.isPicked = true;
+                        rowCol = store.pickedIndices[id]
+                    }else{
+                        delete store.pickedIndices[id];
+                    }
+                    console.log('store: ', store);
+                    // store.isClicking = false;
+                }
+            }
+            isPicked = rowCol!==undefined;
             let drawer = gate.customDrawer || GatePainting.DEFAULT_DRAWER;
             painter.noteTouchBlocker({rect: gateRect, cursor: 'pointer'});
             if (gate.canChangeInSize()) {
@@ -545,7 +585,8 @@ class DisplayedCircuit {
                 stats,
                 {row, col},
                 this._highlightedSlot === undefined ? hand.hoverPoints() : [],
-                stats.customStatsForSlot(col, row)));
+                stats.customStatsForSlot(col, row),
+                isPicked));
 
             this._drawGate_disabledReason(painter, col, row, gateRect, isHighlighted);
         }
