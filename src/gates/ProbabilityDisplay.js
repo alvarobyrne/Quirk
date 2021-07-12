@@ -126,7 +126,7 @@ function _paintMultiProbabilityDisplay_grid(args) {
     let {painter, rect: {x, y, w, h}} = args;
     let n = 1 << args.gate.height;
     let d = h / n;
-    painter.fillRect(args.rect, Config.DISPLAY_GATE_BACK_COLOR);
+    painter.fillRect(args.rect, args.isPicked?'blue':Config.DISPLAY_GATE_BACK_COLOR);
 
     if (d < 1) {
         args.painter.ctx.save();

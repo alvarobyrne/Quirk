@@ -17600,7 +17600,7 @@ $traceurRuntime.getModule("traceur-runtime@0.0.111/src/runtime/polyfills/polyfil
         h = $__9.h;
     var n = 1 << args.gate.height;
     var d = h / n;
-    painter.fillRect(args.rect, Config.DISPLAY_GATE_BACK_COLOR);
+    painter.fillRect(args.rect, args.isPicked ? 'blue' : Config.DISPLAY_GATE_BACK_COLOR);
     if (d < 1) {
       args.painter.ctx.save();
       args.painter.ctx.globalAlpha *= 0.2;
